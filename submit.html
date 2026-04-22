@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Submit Your Brand · Performance E-commerce Group</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    html, body { margin: 0; padding: 0; background: #f5f1ea; font-family: 'Inter', system-ui, sans-serif; color: #1a1713; }
+    * { box-sizing: border-box; }
+    a { color: inherit; }
+    html { scroll-behavior: smooth; }
+    input:focus, select:focus, textarea:focus { border-color: #1a1713 !important; }
+  </style>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const PEG = {
+      ACCENT: 'oklch(52% 0.19 25)',
+      ACCENT_SOFT: 'oklch(52% 0.19 25 / 0.12)',
+      ACCENT_LIGHT: 'oklch(82% 0.18 30)',
+      BG: '#f5f1ea',
+      PANEL: '#ede7dc',
+      INK: '#1a1713',
+      INK_DIM: 'rgba(26,23,19,0.6)',
+      INK_DIMMER: 'rgba(26,23,19,0.38)',
+      RULE: 'rgba(26,23,19,0.14)',
+      RULE_STRONG: 'rgba(26,23,19,0.28)',
+    };
+    const pegStyles = {
+      page: { background: PEG.BG, color: PEG.INK, fontFamily: '"Inter", system-ui, sans-serif', minHeight: '100vh', position: 'relative' },
+      serif: { fontFamily: '"Instrument Serif", Georgia, serif', fontWeight: 400 },
+      mono: { fontFamily: '"JetBrains Mono", ui-monospace, monospace', letterSpacing: 1 },
+    };
+
+    function PegNav() {
+      const links = [
+        ['Portfolio', 'index.html#portfolio'],
+        ['Thesis', 'index.html#thesis'],
+        ['Careers', 'careers.html'],
+        ['Contact', 'index.html#contact'],
+      ];
+      return (
+        <div style={{
+          padding: '24px 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          borderBottom: `1px solid ${PEG.RULE}`, background: PEG.BG, position: 'sticky', top: 0, zIndex: 20,
+        }}>
+          <a href="index.html" style={{ textDecoration: 'none', color: PEG.INK, display: 'flex', flexDirection: 'column', gap: 2, lineHeight: 1 }}>
+            <div style={{ ...pegStyles.serif, fontSize: 24, letterSpacing: -0.5, lineHeight: 1 }}>Performance</div>
+            <div style={{ ...pegStyles.mono, fontSize: 9, color: PEG.INK_DIM, letterSpacing: 2 }}>E-COMMERCE GROUP</div>
+          </a>
+          <div style={{ display: 'flex', gap: 36, alignItems: 'center' }}>
+            {links.map(([label, href]) => (
+              <a key={label} href={href} style={{ fontSize: 14, color: PEG.INK, textDecoration: 'none', letterSpacing: 0.2 }}>{label}</a>
+            ))}
+            <a href="submit.html" style={{ background: PEG.INK, color: PEG.BG, padding: '10px 18px', fontSize: 13, textDecoration: 'none', letterSpacing: 0.3 }}>Submit your brand &rarr;</a>
+          </div>
+        </div>
+      );
+    }
+
+    function PegFooter() {
+      return (
+        <div id="contact" style={{ background: PEG.INK, color: PEG.BG, padding: '120px 48px 48px' }}>
+          <div style={{ marginBottom: 72 }}>
+            <div style={{ ...pegStyles.mono, fontSize: 10, color: 'rgba(245,241,234,0.5)', letterSpacing: 2, marginBottom: 16 }}>&sect; GET IN TOUCH</div>
+            <h2 style={{ ...pegStyles.serif, fontSize: 140, lineHeight: 0.88, letterSpacing: -5, margin: 0 }}>
+              Let's <span style={{ fontStyle: 'italic', color: PEG.ACCENT_LIGHT }}>talk.</span>
+            </h2>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 48, paddingBottom: 48, borderBottom: '1px solid rgba(245,241,234,0.2)' }}>
+            {[
+              ['Brand inquiries', 'brands@peg.holdings', '48-hour response'],
+              ['Careers', 'work@peg.holdings', 'via role page'],
+              ['Press', 'press@peg.holdings', "we\u2019re selective"],
+              ['Everything else', 'hello@peg.holdings', 'we read every email'],
+            ].map(([k, v, s], i) => (
+              <div key={i}>
+                <div style={{ ...pegStyles.mono, fontSize: 10, color: 'rgba(245,241,234,0.5)', letterSpacing: 2, marginBottom: 16 }}>{k.toUpperCase()}</div>
+                <div style={{ ...pegStyles.serif, fontSize: 22, letterSpacing: -0.3, marginBottom: 6 }}>{v}</div>
+                <div style={{ fontSize: 12, color: 'rgba(245,241,234,0.6)' }}>{s}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ paddingTop: 28, display: 'flex', justifyContent: 'space-between', ...pegStyles.mono, fontSize: 10, color: 'rgba(245,241,234,0.5)', letterSpacing: 2 }}>
+            <div>&copy; MMXXVI &middot; PERFORMANCE E-COMMERCE GROUP</div>
+            <div>PERFORMANCEECOMMERCEGROUP.COM</div>
+            <div>A PRIVATELY HELD HOLDING COMPANY</div>
+          </div>
+        </div>
+      );
+    }
+
+    function SubmitPage() {
+      const [submitted, setSubmitted] = React.useState(false);
+      const [form, setForm] = React.useState({
+        name: '', email: '', brand: '', category: 'Beauty', revenue: '$2M \u2013 $5M',
+        channel: 'DTC', notes: '',
+      });
+      const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+      if (submitted) {
+        return (
+          <div style={pegStyles.page}>
+            <PegNav />
+            <div style={{ padding: '120px 48px', maxWidth: 800, margin: '0 auto', minHeight: '60vh' }}>
+              <div style={{ ...pegStyles.mono, fontSize: 10, color: PEG.ACCENT, letterSpacing: 2, marginBottom: 16 }}>&check; SUBMISSION RECEIVED</div>
+              <h1 style={{ ...pegStyles.serif, fontSize: 96, lineHeight: 0.9, letterSpacing: -3, margin: 0, marginBottom: 24 }}>
+                Thank <span style={{ fontStyle: 'italic', color: PEG.ACCENT }}>you.</span>
+              </h1>
+              <p style={{ fontSize: 20, lineHeight: 1.55, color: PEG.INK_DIM, marginBottom: 32 }}>
+                A member of our corporate development team will review your submission and reply within 48 hours. Every time.
+              </p>
+              <a href="index.html" style={{ ...pegStyles.mono, fontSize: 12, color: PEG.INK, textDecoration: 'underline', letterSpacing: 1.5 }}>&larr; BACK TO HOME</a>
+            </div>
+            <PegFooter />
+          </div>
+        );
+      }
+
+      const fieldStyle = {
+        background: '#fff', border: `1px solid ${PEG.RULE_STRONG}`, padding: '14px 16px',
+        fontSize: 15, fontFamily: 'inherit', color: PEG.INK, width: '100%', outline: 'none',
+      };
+      const labelStyle = { ...pegStyles.mono, fontSize: 10, color: PEG.INK_DIM, letterSpacing: 2, marginBottom: 8, display: 'block' };
+
+      return (
+        <div style={pegStyles.page}>
+          <PegNav />
+          <div style={{ padding: '64px 48px 96px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, maxWidth: 1280, margin: '0 auto' }}>
+            {/* Left — pitch */}
+            <div style={{ position: 'sticky', top: 120, alignSelf: 'flex-start' }}>
+              <div style={{ ...pegStyles.mono, fontSize: 10, color: PEG.INK_DIM, letterSpacing: 2, marginBottom: 16 }}>&sect; SUBMIT YOUR BRAND</div>
+              <h1 style={{ ...pegStyles.serif, fontSize: 88, lineHeight: 0.98, letterSpacing: -3, margin: 0, marginBottom: 40 }}>
+                Tell us<br/>
+                about <span style={{ fontStyle: 'italic', color: PEG.ACCENT }}>what</span><br/>
+                you built.
+              </h1>
+              <p style={{ fontSize: 16, lineHeight: 1.6, color: PEG.INK_DIM, marginBottom: 32 }}>
+                We review every submission personally. If there's a fit, you'll hear from us within 48 hours with a first call scheduled.
+              </p>
+              <div style={{ borderTop: `1px solid ${PEG.RULE_STRONG}`, paddingTop: 20 }}>
+                <div style={{ ...pegStyles.mono, fontSize: 10, color: PEG.INK_DIM, letterSpacing: 2, marginBottom: 12 }}>WE LOOK FOR</div>
+                {[
+                  ['$2M \u2013 $40M', 'TTM revenue'],
+                  ['> 55%', 'Gross margin'],
+                  ['Beauty \u00b7 Apparel \u00b7 Footwear', 'Primary categories'],
+                  ['30 \u2013 60 days', 'Typical time to close'],
+                ].map(([k, v], i) => (
+                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: `1px solid ${PEG.RULE}` }}>
+                    <span style={{ ...pegStyles.serif, fontSize: 18, color: PEG.ACCENT }}>{k}</span>
+                    <span style={{ fontSize: 13, color: PEG.INK_DIM }}>{v}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right — form */}
+            <form onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }}
+              style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                <div>
+                  <label style={labelStyle}>YOUR NAME</label>
+                  <input required style={fieldStyle} value={form.name} onChange={e => set('name', e.target.value)} placeholder="Jane Founder" />
+                </div>
+                <div>
+                  <label style={labelStyle}>EMAIL</label>
+                  <input required type="email" style={fieldStyle} value={form.email} onChange={e => set('email', e.target.value)} placeholder="jane@brand.com" />
+                </div>
+              </div>
+              <div>
+                <label style={labelStyle}>BRAND NAME</label>
+                <input required style={fieldStyle} value={form.brand} onChange={e => set('brand', e.target.value)} placeholder="What's your brand called?" />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
+                <div>
+                  <label style={labelStyle}>CATEGORY</label>
+                  <select style={fieldStyle} value={form.category} onChange={e => set('category', e.target.value)}>
+                    {['Beauty', 'Apparel', 'Footwear', 'Accessories', 'Wellness', 'Other'].map(c => <option key={c}>{c}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={labelStyle}>TTM REVENUE</label>
+                  <select style={fieldStyle} value={form.revenue} onChange={e => set('revenue', e.target.value)}>
+                    {['< $2M', '$2M \u2013 $5M', '$5M \u2013 $10M', '$10M \u2013 $20M', '$20M \u2013 $40M', '> $40M'].map(c => <option key={c}>{c}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={labelStyle}>PRIMARY CHANNEL</label>
+                  <select style={fieldStyle} value={form.channel} onChange={e => set('channel', e.target.value)}>
+                    {['DTC', 'Amazon', 'DTC + Amazon', 'Retail / Wholesale', 'Hybrid'].map(c => <option key={c}>{c}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label style={labelStyle}>TELL US WHAT MAKES IT SPECIAL</label>
+                <textarea rows="6" style={{ ...fieldStyle, resize: 'vertical', fontFamily: 'inherit' }} value={form.notes} onChange={e => set('notes', e.target.value)}
+                  placeholder="A paragraph or two on the product, the customer, and why it works. Link to a deck if you have one." />
+              </div>
+              <button type="submit" style={{
+                background: PEG.INK, color: PEG.BG, border: 'none',
+                padding: '20px 28px', fontSize: 15, letterSpacing: 0.5,
+                cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              }}>
+                <span>Send submission</span>
+                <span style={pegStyles.serif}>&rarr;</span>
+              </button>
+              <p style={{ ...pegStyles.mono, fontSize: 10, color: PEG.INK_DIM, letterSpacing: 1.5, margin: 0 }}>
+                EVERYTHING YOU SHARE IS TREATED CONFIDENTIALLY. WE DO NOT FORWARD, SHARE, OR PUBLISH SUBMISSIONS.
+              </p>
+            </form>
+          </div>
+          <PegFooter />
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<SubmitPage />);
+  </script>
+</body>
+</html>

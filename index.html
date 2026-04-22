@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Performance E-commerce Group</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    html, body { margin: 0; padding: 0; background: #f5f1ea; font-family: 'Inter', system-ui, sans-serif; color: #1a1713; }
+    * { box-sizing: border-box; }
+    a { color: inherit; }
+    html { scroll-behavior: smooth; }
+    @keyframes peg-marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+  </style>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    // ─── Design Tokens ──────────────────────────────────────────
+    const PEG = {
+      ACCENT: 'oklch(52% 0.19 25)',
+      ACCENT_SOFT: 'oklch(52% 0.19 25 / 0.12)',
+      ACCENT_LIGHT: 'oklch(82% 0.18 30)',
+      BG: '#f5f1ea',
+      PANEL: '#ede7dc',
+      INK: '#1a1713',
+      INK_DIM: 'rgba(26,23,19,0.6)',
+      INK_DIMMER: 'rgba(26,23,19,0.38)',
+      RULE: 'rgba(26,23,19,0.14)',
+      RULE_STRONG: 'rgba(26,23,19,0.28)',
+    };
+
+    const pegStyles = {
+      page: {
+        background: PEG.BG,
+        color: PEG.INK,
+        fontFamily: '"Inter", system-ui, sans-serif',
+        minHeight: '100vh',
+        position: 'relative',
+      },
+      serif: {
+        fontFamily: '"Instrument Serif", Georgia, serif',
+        fontWeight: 400,
+      },
+      mono: {
+        fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+        letterSpacing: 1,
+      },
+    };
+
+    // ─── Brand Data ──────────────────────────────────────────────
+    const PEG_BRANDS = [
+      { cat: 'Prestige Skincare',       rev: '8-figure ARR',  yr: '2020', ch: 'DTC \u00b7 Amazon',      growth: '+38%',  vert: 'Beauty',      img: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800&q=80' },
+      { cat: 'Clean Cosmetics',         rev: 'Mid 7-figure',  yr: '2021', ch: 'Amazon',            growth: '+112%', vert: 'Beauty',      img: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&q=80' },
+      { cat: 'Haircare Systems',        rev: '8-figure ARR',  yr: '2021', ch: 'DTC \u00b7 Retail',      growth: '+46%',  vert: 'Beauty',      img: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80' },
+      { cat: 'Niche Fragrance',         rev: 'Low 7-figure',  yr: '2022', ch: 'DTC',               growth: '+220%', vert: 'Beauty',      img: 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&q=80' },
+      { cat: "Women's Ready-to-Wear",   rev: '8-figure ARR',  yr: '2019', ch: 'DTC \u00b7 Wholesale',   growth: '+24%',  vert: 'Apparel',     img: 'https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?w=800&q=80' },
+      { cat: "Men's Essentials",        rev: 'Mid 7-figure',  yr: '2022', ch: 'DTC \u00b7 Amazon',      growth: '+58%',  vert: 'Apparel',     img: 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=800&q=80' },
+      { cat: 'Performance Athleisure',  rev: '8-figure ARR',  yr: '2020', ch: 'DTC',               growth: '+82%',  vert: 'Apparel',     img: 'https://images.unsplash.com/photo-1483721310020-03333e577078?w=800&q=80' },
+      { cat: 'Fine Jewelry',            rev: '7-figure ARR',  yr: '2023', ch: 'DTC \u00b7 Retail',      growth: '+34%',  vert: 'Accessories', img: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800&q=80' },
+      { cat: 'Direct-to-Feet Footwear', rev: '8-figure ARR',  yr: '2021', ch: 'DTC \u00b7 Amazon',      growth: '+62%',  vert: 'Footwear',    img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80' },
+      { cat: 'Intimates & Basics',      rev: 'Mid 7-figure',  yr: '2023', ch: 'DTC',               growth: '+96%',  vert: 'Apparel',     img: 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=800&q=80' },
+      { cat: 'Wellness Supplements',    rev: '8-figure ARR',  yr: '2020', ch: 'DTC \u00b7 Amazon',      growth: '+41%',  vert: 'Wellness',    img: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&q=80' },
+      { cat: 'Accessories Atelier',     rev: 'Low 7-figure',  yr: '2024', ch: 'DTC',               growth: '+156%', vert: 'Accessories', img: 'https://images.unsplash.com/photo-1591561954557-26941169b49e?w=800&q=80' },
+      { cat: 'Sun + Body Care',         rev: 'Mid 7-figure',  yr: '2022', ch: 'DTC \u00b7 Amazon',      growth: '+73%',  vert: 'Beauty',      img: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=800&q=80' },
+      { cat: 'Color Cosmetics',         rev: '7-figure ARR',  yr: '2023', ch: 'Amazon \u00b7 Retail',   growth: '+88%',  vert: 'Beauty',      img: 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=800&q=80' },
+      { cat: 'Denim & Daily',           rev: 'Mid 7-figure',  yr: '2022', ch: 'DTC \u00b7 Wholesale',   growth: '+29%',  vert: 'Apparel',     img: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=800&q=80' },
+      { cat: 'Tech-Wear Essentials',    rev: '7-figure ARR',  yr: '2024', ch: 'DTC',               growth: '+140%', vert: 'Apparel',     img: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800&q=80' },
+      { cat: 'Sleep & Lounge',          rev: 'Low 7-figure',  yr: '2024', ch: 'Amazon',            growth: '+68%',  vert: 'Apparel',     img: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&q=80' },
+      { cat: 'Tools & Devices (Beauty)', rev: '8-figure ARR', yr: '2021', ch: 'DTC \u00b7 Amazon',      growth: '+52%',  vert: 'Beauty',      img: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&q=80' },
+      { cat: 'Prestige Haircare',       rev: 'Mid 7-figure',  yr: '2023', ch: 'DTC \u00b7 Retail',      growth: '+94%',  vert: 'Beauty',      img: 'https://images.unsplash.com/photo-1526947425960-945c6e72858f?w=800&q=80' },
+      { cat: 'Minimalist Footwear',     rev: '7-figure ARR',  yr: '2024', ch: 'DTC',               growth: '+118%', vert: 'Footwear',    img: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800&q=80' },
+    ];
+
+    const PEG_ROLES = [
+      { t: 'Customer Service Representative', team: 'Customer Experience', loc: 'Remote \u00b7 PH / LATAM', n: 4, type: 'Full-time' },
+      { t: 'Customer Service Manager', team: 'Customer Experience', loc: 'Remote \u00b7 US-East', n: 1, type: 'Full-time' },
+      { t: 'Team Lead, Customer Ops', team: 'Customer Experience', loc: 'Remote \u00b7 Global', n: 2, type: 'Full-time' },
+      { t: 'Marketing Assistant', team: 'Growth', loc: 'Remote \u00b7 Anywhere', n: 1, type: 'Full-time' },
+      { t: 'Creative Marketing Assistant', team: 'Growth', loc: 'Remote \u00b7 Anywhere', n: 1, type: 'Full-time' },
+      { t: 'Email Marketing Specialist', team: 'Growth', loc: 'Remote \u00b7 US / EU', n: 2, type: 'Full-time' },
+      { t: 'Video Editor', team: 'Creative Studio', loc: 'Remote \u00b7 Global', n: 2, type: 'Full-time' },
+      { t: 'Graphic Designer', team: 'Creative Studio', loc: 'Remote \u00b7 Global', n: 1, type: 'Full-time' },
+    ];
+
+    // ─── Shell ──────────────────────────────────────────────────
+    function PegShell({ children }) {
+      return <div style={pegStyles.page}>{children}</div>;
+    }
+
+    // ─── Nav ──────────────────────────────────────────────────
+    function PegNav() {
+      const links = [
+        ['Portfolio', '#portfolio'],
+        ['Thesis', '#thesis'],
+        ['Careers', 'careers.html'],
+        ['Contact', '#contact'],
+      ];
+      return (
+        <div style={{
+          padding: '24px 48px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          borderBottom: `1px solid ${PEG.RULE}`,
+          background: PEG.BG,
+          position: 'sticky',
+          top: 0,
+          zIndex: 20,
+        }}>
+          <a href="#" style={{ textDecoration: 'none', color: PEG.INK, display: 'flex', flexDirection: 'column', gap: 2, lineHeight: 1 }}>
+            <div style={{ ...pegStyles.serif, fontSize: 24, letterSpacing: -0.5, lineHeight: 1 }}>Performance</div>
+            <div style={{ ...pegStyles.mono, fontSize: 9, color: PEG.INK_DIM, letterSpacing: 2 }}>E-COMMERCE GROUP</div>
+          </a>
+          <div style={{ display: 'flex', gap: 36, alignItems: 'center' }}>
+            {links.map(([label, href]) => (
+              <a key={label} href={href} style={{
+                fontSize: 14,
+                color: PEG.INK,
+                textDecoration: 'none',
+                letterSpacing: 0.2,
+              }}>{label}</a>
+            ))}
+            <a href="submit.html" style={{
+              background: PEG.INK,
+              color: PEG.BG,
+              padding: '10px 18px',
+              fontSize: 13,
+              textDecoration: 'none',
+              letterSpacing: 0.3,
+            }}>Submit your brand &rarr;</a>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── Hero ──────────────────────────────────────────────────
+    function HeroHome() {
+      return (
+        <div style={{ padding: '64px 48px 96px', position: 'relative' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 56, ...pegStyles.mono, fontSize: 10, color: PEG.INK_DIM, letterSpacing: 2 }}>
+            <span>VOLUME 07 — SPRING 2026</span>
+            <span>A HOLDING COMPANY FOR 20 BRANDS</span>
+            <span>BEAUTY · APPAREL · FOOTWEAR</span>
+          </div>
+
+          <h1 style={{
+            ...pegStyles.serif,
+            fontSize: 200, lineHeight: 0.88, letterSpacing: -5, margin: 0, color: PEG.INK,
+          }}>
+            Great brands<br/>
+            deserve <span style={{ fontStyle: 'italic', color: PEG.ACCENT }}>patient</span><br/>
+            operators.
+          </h1>
+
+          <div style={{ marginTop: 56, overflow: 'hidden', borderTop: `1px solid ${PEG.RULE}`, borderBottom: `1px solid ${PEG.RULE}`, padding: '20px 0' }}>
+            <div style={{ display: 'flex', whiteSpace: 'nowrap', animation: 'peg-marquee 45s linear infinite', ...pegStyles.serif, fontSize: 44, letterSpacing: -0.5 }}>
+              {Array.from({ length: 2 }).map((_, r) => (
+                <React.Fragment key={r}>
+                  {['Skincare', 'Haircare', 'Cosmetics', 'Fragrance', 'Apparel', 'Athleisure', 'Footwear', 'Jewelry', 'Intimates', 'Wellness'].map((w, i) => (
+                    <span key={`${r}-${i}`} style={{ paddingRight: 40, display: 'inline-flex', alignItems: 'center' }}>
+                      <span style={{ fontStyle: i % 2 ? 'italic' : 'normal', color: i % 3 === 0 ? PEG.ACCENT : PEG.INK }}>{w}</span>
+                      <span style={{ color: PEG.INK_DIMMER, paddingLeft: 40 }}>&mdash;</span>
+                    </span>
+                  ))}
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 48, marginTop: 56 }}>
+            <p style={{ ...pegStyles.serif, fontSize: 30, lineHeight: 1.15, letterSpacing: -0.5, margin: 0, color: PEG.INK }}>
+              Twenty operator-led brands, one holding company, <span style={{ fontStyle: 'italic', color: PEG.ACCENT }}>permanent</span> capital.
+            </p>
+            <p style={{ fontSize: 15, lineHeight: 1.65, color: PEG.INK_DIM, margin: 0 }}>
+              Performance E-commerce Group acquires and operates consumer brands in beauty, apparel, and footwear. We buy what we can make better, and we hire the people who make that possible.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <a href="submit.html" style={{ background: PEG.INK, color: PEG.BG, border: 'none', padding: '18px 24px', fontSize: 14, letterSpacing: 0.5, textDecoration: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>Submit your brand</span>
+                <span style={pegStyles.serif}>&rarr;</span>
+              </a>
+              <a href="careers.html" style={{ background: 'transparent', color: PEG.INK, border: `1px solid ${PEG.INK}`, padding: '18px 24px', fontSize: 14, letterSpacing: 0.5, textDecoration: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>Join the team</span>
+                <span style={pegStyles.serif}>&rarr;</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── Numbers ──────────────────────────────────────────────────
+    function NumbersHome() {
+      const stats = [
+        { n: '20', s: 'Brands operated', note: 'beauty \u00b7 apparel \u00b7 footwear' },
+        { n: '$184M', s: 'Aggregate TTM GMV', note: '+24.8% year over year' },
+        { n: '186', s: 'Full-time operators', note: 'remote, 12 countries' },
+        { n: '47', s: 'Markets served', note: 'dtc \u00b7 amazon \u00b7 retail' },
+        { n: '62.4%', s: 'Blended gross margin', note: 'across the portfolio' },
+        { n: '\u221e', s: 'Holding period', note: 'no fund timeline' },
+      ];
+      return (
+        <div style={{ padding: '96px 48px', background: PEG.PANEL, borderTop: `1px solid ${PEG.RULE}`, borderBottom: `1px solid ${PEG.RULE}` }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 64 }}>
+            <div>
+              <div style={{ ...pegStyles.mono, fontSize: 10, color: PEG.INK_DIM, letterSpacing: 2, marginBottom: 16 }}>&sect; 02 &mdash; THE LEDGER</div>
+              <h2 style={{ ...pegStyles.serif, fontSize: 80, lineHeight: 0.9, letterSpacing: -2, margin: 0 }}>
+                By the <span style={{ fontStyle: 'italic', color: PEG.ACCENT }}>numbers.</span>
+              </h2>
+            </div>
+            <div style={{ ...pegStyles.mono, fontSize: 11, color: PEG.INK_DIM, letterSpacing: 1, maxWidth: 280, textAlign: 'right' }}>
+              Portfolio-wide. Self-reported. Q1 2026 print.
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}>
+            {stats.map((st, i) => (
+              <div key={i} style={{
+                padding: '36px 32px 36px 0',
+                borderTop: i < 3 ? `1px solid ${PEG.RULE_STRONG}` : 'none',
+                borderBottom: `1px solid ${PEG.RULE_STRONG}`,
+                marginRight: (i % 3 !== 2) ? 32 : 0,
+              }}>
+                <div style={{ ...pegStyles.serif, fontSize: 112, lineHeight: 0.9, letterSpacing: -4, color: PEG.INK, marginBottom: 16 }}>{st.n}</div>
+                <div style={{ fontSize: 19, fontWeight: 500, letterSpacing: -0.3, marginBottom: 6 }}>{st.s}</div>
+                <div style={{ ...pegStyles.mono, fontSize: 11, color: PEG.INK_DIM, letterSpacing: 1 }}>{st.note}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // ─── Portfolio ──────────────────────────────────────────────────
+    function PortfolioHome() {
+      const [filter, setFilter] = React.useState('All');
+      const verticals = ['All', 'Beauty', 'Apparel', 'Footwear', 'Accessories', 'Wellness'];
+      const filtered = filter === 'All' ? PEG_BRANDS : PEG_BRANDS.filter(b => b.vert === filter);
+
+      return (
+        <div id="portfolio" style={{ padding: '96px 48px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 64, alignItems: 'flex-end', marginBottom: 56 }}>
+            <div>
+              <div style={{ ...pegStyles.mono, fontSize: 10, color: PEG.INK_DIM, letterSpacing: 2, marginBottom: 16 }}>&sect; 03 &mdash; THE PORTFOLIO</div>
+              <h2 style={{ ...pegStyles.serif, fontSize: 80, lineHeight: 0.9, letterSpacing: -2, margin: 0 }}>
+                Twenty<br/>
+                <span style={{ fontStyle: 'italic', color: PEG.ACCENT }}>brands.</span>
+              </h2>
+            </div>
+            <p style={{ fontSize: 16, lineHeight: 1.55, color: PEG.INK_DIM, margin: 0, maxWidth: 560 }}>
+              Out of respect for the founders and teams we work with, we keep the names private. Here's the shape of the portfolio.
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap' }}>
+            {verticals.map(v => (
+              <button key={v} onClick={() => setFilter(v)} style={{
+                ...pegStyles.mono,
+                fontSize: 11,
+                letterSpacing: 1.5,
+                padding: '8px 14px',
+                border: `1px solid ${filter === v ? PEG.INK : PEG.RULE_STRONG}`,
+                background: filter === v ? PEG.INK : 'transparent',
+                color: filter === v ? PEG.BG : PEG.INK,
+                cursor: 'pointer',
+              }}>
+                {v.toUpperCase()} &middot; {v === 'All' ? PEG_BRANDS.length : PEG_BRANDS.filter(b => b.vert === v).length}
+              </button>
+            ))}
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
+            {filtered.map((b, i) => (
+              <div key={b.cat} style={{
+                background: '#fff',
+                minHeight: 300,
+                display: 'flex', flexDirection: 'column',
+                border: `1px solid ${PEG.RULE}`,
+                overflow: 'hidden',
+              }}>
+                <div style={{
+                  width: '100%', height: 200, position: 'relative',
+                  background: `#ddd center/cover no-repeat url("${b.img}")`,
+                  overflow: 'hidden',
+                }}>
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.35) 100%)' }} />
+                  <div style={{ position: 'absolute', top: 10, right: 12, ...pegStyles.mono, fontSize: 9, color: 'rgba(255,255,255,0.95)', letterSpacing: 1.5, textShadow: '0 1px 2px rgba(0,0,0,0.4)' }}>
+                    {String(PEG_BRANDS.indexOf(b) + 1).padStart(2,'0')}/20
+                  </div>
+                  <div style={{ position: 'absolute', bottom: 10, left: 12, ...pegStyles.mono, fontSize: 9, color: 'rgba(255,255,255,0.95)', letterSpacing: 1.5, textShadow: '0 1px 2px rgba(0,0,0,0.4)' }}>
+                    {b.vert.toUpperCase()}
+                  </div>
+                </div>
+                <div style={{ padding: 20, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div>
+                    <div style={{ ...pegStyles.serif, fontSize: 21, letterSpacing: -0.5, lineHeight: 1.1, marginBottom: 10 }}>{b.cat}</div>
+                    <div style={{ fontSize: 12, color: PEG.INK_DIM, lineHeight: 1.5 }}>
+                      {b.rev} &middot; Acquired {b.yr}
+                    </div>
+                  </div>
+                  <div style={{ borderTop: `1px solid ${PEG.RULE}`, paddingTop: 10, marginTop: 16, display: 'flex', justifyContent: 'space-between', ...pegStyles.mono, fontSize: 10, letterSpacing: 1 }}>
+                    <span style={{ color: PEG.INK_DIM }}>{b.ch}</span>
+                    <span style={{ color: PEG.ACCENT, fontWeight: 600 }}>{b.growth}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // ─── Thesis ──────────────────────────────────────────────────
+    function ThesisHome() {
+      const items = [
+        ['Revenue', '$2M \u2013 $40M TTM', "We\u2019re not the right home for sub-scale or mega-cap; we\u2019re right in the middle."],
+        ['Margin', 'Gross > 55%', 'Real products with real margin. We can build retention on top of that.'],
+        ['Category', 'Beauty, apparel, footwear', 'Adjacents considered when the unit economics compel.'],
+        ['Channel', 'DTC, Amazon, or hybrid', 'We have playbooks and teams for every channel combination.'],
+        ['Founder', 'Stay or exit', 'Partial liquidity, full exit, or earn-out \u2014 we design around you.'],
+        ['Timeline', '30\u201360 days to close', "We know what we\u2019re looking for. Our diligence is fast because it\u2019s focused."],
+      ];
+
+      return (
+        <div id="thesis" style={{ background: PEG.INK, color: PEG.BG, padding: '112px 48px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, marginBottom: 64 }}>
+            <div>
+              <div style={{ ...pegStyles.mono, fontSize: 10, color: 'rgba(245,241,234,0.5)', letterSpacing: 2, marginBottom: 16 }}>&sect; 04 &mdash; WHAT WE LOOK FOR</div>
+              <h2 style={{ ...pegStyles.serif, fontSize: 96, lineHeight: 0.88, letterSpacing: -3, margin: 0 }}>
+                If you built<br/>
+                something<br/>
+                <span style={{ fontStyle: 'italic', color: PEG.ACCENT_LIGHT }}>real</span>,<br/>
+                we'd like<br/>
+                to hear<br/>
+                about it.
+              </h2>
+            </div>
+            <div style={{ paddingTop: 24 }}>
+              {items.map(([k, v, d], i) => (
+                <div key={i} style={{
+                  display: 'grid', gridTemplateColumns: '140px 1fr',
+                  gap: 24, padding: '24px 0',
+                  borderTop: `1px solid rgba(245,241,234,0.15)`,
+                  borderBottom: i === items.length - 1 ? `1px solid rgba(245,241,234,0.15)` : 'none',
+                }}>
+                  <div style={{ ...pegStyles.mono, fontSize: 11, color: 'rgba(245,241,234,0.5)', letterSpacing: 2, paddingTop: 6 }}>
+                    {String(i+1).padStart(2,'0')} &middot; {k.toUpperCase()}
+                  </div>
+                  <div>
+                    <div style={{ ...pegStyles.serif, fontSize: 30, letterSpacing: -0.5, marginBottom: 6, color: PEG.ACCENT_LIGHT }}>{v}</div>
+                    <div style={{ fontSize: 14, lineHeight: 1.55, color: 'rgba(245,241,234,0.7)' }}>{d}</div>
+                  </div>
+                </div>
+              ))}
+
+              <div style={{ marginTop: 32, padding: 28, border: `1px solid rgba(245,241,234,0.25)`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24 }}>
+                <div>
+                  <div style={{ ...pegStyles.serif, fontSize: 26, letterSpacing: -0.5, marginBottom: 6 }}>
+                    Send us the <span style={{ fontStyle: 'italic', color: PEG.ACCENT_LIGHT }}>deck.</span>
+                  </div>
+                  <div style={{ fontSize: 13, color: 'rgba(245,241,234,0.6)' }}>We reply within 48 hours. Every time.</div>
+                </div>
+                <a href="submit.html" style={{ background: PEG.BG, color: PEG.INK, border: 'none', padding: '16px 24px', fontSize: 13, letterSpacing: 0.5, textDecoration: 'none', whiteSpace: 'nowrap' }}>
+                  Submit your brand &rarr;
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── Careers Teaser ──────────────────────────────────────────
+    function CareersHomeTeaser() {
+      return (
+        <div id="careers" style={{ padding: '96px 48px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'flex-end', marginBottom: 48 }}>
+            <div>
+              <div style={{ ...pegStyles.mono, fontSize: 10, color: PEG.INK_DIM, letterSpacing: 2, marginBottom: 16 }}>&sect; 05 &mdash; WE ARE HIRING</div>
+              <h2 style={{ ...pegStyles.serif, fontSize: 104, lineHeight: 0.86, letterSpacing: -3.5, margin: 0 }}>
+                Come run<br/>
+                brands <span style={{ fontStyle: 'italic', color: PEG.ACCENT }}>with</span><br/>
+                us.
+              </h2>
+            </div>
+            <div>
+              <p style={{ fontSize: 16, lineHeight: 1.55, color: PEG.INK_DIM, margin: 0, marginBottom: 20 }}>
+                Eight open roles, always a few more on the horizon. Remote-first, globally distributed, asynchronous by default. We hire against the bench &mdash; apply even if your exact title isn't listed.
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, fontSize: 13 }}>
+                {[
+                  ['Remote since day one', '100% distributed'],
+                  ['12 countries', 'and counting'],
+                  ['Quarterly bonus', 'performance-tied'],
+                  ['$2k / year', 'learning budget'],
+                ].map(([a, b], i) => (
+                  <div key={i} style={{ borderTop: `1px solid ${PEG.RULE_STRONG}`, paddingTop: 10 }}>
+                    <div style={{ fontWeight: 500 }}>{a}</div>
+                    <div style={{ color: PEG.INK_DIM }}>{b}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ borderTop: `2px solid ${PEG.INK}` }}>
+            {PEG_ROLES.slice(0, 5).map((r, i) => (
+              <a key={i} href={`apply.html?role=${encodeURIComponent(r.t)}`} style={{
+                padding: '28px 0',
+                borderBottom: `1px solid ${PEG.RULE}`,
+                display: 'grid', gridTemplateColumns: '50px 1fr 220px 180px 80px 60px',
+                alignItems: 'center', gap: 20, color: PEG.INK, textDecoration: 'none',
+              }}>
+                <div style={{ ...pegStyles.mono, fontSize: 11, color: PEG.INK_DIM, letterSpacing: 1.2 }}>{String(i+1).padStart(2,'0')}</div>
+                <div style={{ ...pegStyles.serif, fontSize: 28, letterSpacing: -0.5, lineHeight: 1.1 }}>{r.t}</div>
+                <div style={{ fontSize: 13, color: PEG.INK_DIM }}>{r.team}</div>
+                <div style={{ ...pegStyles.mono, fontSize: 11, color: PEG.INK_DIM, letterSpacing: 1 }}>{r.loc}</div>
+                <div style={{ ...pegStyles.mono, fontSize: 11, color: PEG.ACCENT, letterSpacing: 1 }}>
+                  {r.n} {r.n === 1 ? 'ROLE' : 'ROLES'}
+                </div>
+                <div style={{ ...pegStyles.serif, fontSize: 26, fontStyle: 'italic', color: PEG.ACCENT, textAlign: 'right' }}>&rarr;</div>
+              </a>
+            ))}
+          </div>
+
+          <div style={{ marginTop: 32, textAlign: 'center', padding: '32px 0', borderBottom: `2px solid ${PEG.INK}` }}>
+            <a href="careers.html" style={{ ...pegStyles.serif, fontSize: 28, fontStyle: 'italic', color: PEG.INK_DIM, textDecoration: 'none' }}>
+              See all <span style={{ color: PEG.ACCENT, fontStyle: 'normal', borderBottom: `2px solid ${PEG.ACCENT}` }}>{PEG_ROLES.length} open roles &rarr;</span>
+            </a>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── FAQ ──────────────────────────────────────────────────
+    function FAQHome() {
+      const [open, setOpen] = React.useState(0);
+      const qs = [
+        ['What types of brands do you buy? Do you only buy Shopify brands or also Amazon companies?',
+          "We acquire brands across all major e-commerce channels \u2014 Shopify DTC, Amazon FBA/FBM, and hybrid businesses that sell through multiple channels including wholesale and retail. We have dedicated playbooks and operational teams for every channel combination, so we\u2019re channel-agnostic. What matters most is the product, the margin, and the category fit."],
+        ['What size companies do you purchase?',
+          "$2M to $40M TTM revenue with gross margin above 55%. We\u2019re not the right home for very early-stage brands or mega-cap acquisitions \u2014 we operate best in the mid-market where our hands-on team can drive meaningful growth."],
+        ['Do founders stay on?',
+          'Optional. Some founders stay for 12\u201324 months of transition; some fully exit on close. We design the structure around what the founder actually wants.'],
+        ['How fast can you close?',
+          "30 to 60 days from LOI. We\u2019ve done it in 21. We know what we\u2019re looking for, and we do our own diligence."],
+      ];
+      return (
+        <div style={{ padding: '96px 48px', background: PEG.PANEL, borderTop: `1px solid ${PEG.RULE}` }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 64, alignItems: 'flex-start' }}>
+            <div>
+              <div style={{ ...pegStyles.mono, fontSize: 10, color: PEG.INK_DIM, letterSpacing: 2, marginBottom: 16 }}>&sect; 06 &mdash; QUESTIONS</div>
+              <h2 style={{ ...pegStyles.serif, fontSize: 80, lineHeight: 0.88, letterSpacing: -2, margin: 0 }}>
+                Frequently<br/>
+                asked.
+              </h2>
+            </div>
+            <div style={{ borderTop: `2px solid ${PEG.INK}` }}>
+              {qs.map(([q, a], i) => (
+                <div key={i}
+                  onClick={() => setOpen(open === i ? -1 : i)}
+                  style={{ padding: '24px 0', borderBottom: `1px solid ${PEG.RULE}`, cursor: 'pointer' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 24 }}>
+                    <div style={{ ...pegStyles.serif, fontSize: 26, letterSpacing: -0.4, lineHeight: 1.15 }}>{q}</div>
+                    <div style={{ ...pegStyles.serif, fontSize: 26, fontStyle: 'italic', color: open === i ? PEG.ACCENT : PEG.INK_DIM, flexShrink: 0 }}>
+                      {open === i ? '\u2014' : '+'}
+                    </div>
+                  </div>
+                  {open === i && (
+                    <div style={{ fontSize: 15, lineHeight: 1.6, color: PEG.INK_DIM, marginTop: 14, maxWidth: 640 }}>
+                      {a}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── Footer ──────────────────────────────────────────────────
+    function PegFooter() {
+      return (
+        <div id="contact" style={{ background: PEG.INK, color: PEG.BG, padding: '120px 48px 48px' }}>
+          <div style={{ marginBottom: 72 }}>
+            <div style={{ ...pegStyles.mono, fontSize: 10, color: 'rgba(245,241,234,0.5)', letterSpacing: 2, marginBottom: 16 }}>&sect; GET IN TOUCH</div>
+            <h2 style={{ ...pegStyles.serif, fontSize: 140, lineHeight: 0.88, letterSpacing: -5, margin: 0 }}>
+              Let's <span style={{ fontStyle: 'italic', color: PEG.ACCENT_LIGHT }}>talk.</span>
+            </h2>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: 48,
+            paddingBottom: 48,
+            borderBottom: `1px solid rgba(245,241,234,0.2)`,
+          }}>
+            {[
+              ['Brand inquiries', 'brands@peg.holdings', '48-hour response'],
+              ['Careers', 'work@peg.holdings', 'via role page'],
+              ['Press', 'press@peg.holdings', "we\u2019re selective"],
+              ['Everything else', 'hello@peg.holdings', 'we read every email'],
+            ].map(([k, v, s], i) => (
+              <div key={i}>
+                <div style={{ ...pegStyles.mono, fontSize: 10, color: 'rgba(245,241,234,0.5)', letterSpacing: 2, marginBottom: 16 }}>{k.toUpperCase()}</div>
+                <div style={{ ...pegStyles.serif, fontSize: 22, letterSpacing: -0.3, marginBottom: 6 }}>{v}</div>
+                <div style={{ fontSize: 12, color: 'rgba(245,241,234,0.6)' }}>{s}</div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{
+            paddingTop: 28,
+            display: 'flex',
+            justifyContent: 'space-between',
+            ...pegStyles.mono,
+            fontSize: 10,
+            color: 'rgba(245,241,234,0.5)',
+            letterSpacing: 2,
+          }}>
+            <div>&copy; MMXXVI &middot; PERFORMANCE E-COMMERCE GROUP</div>
+            <div>PERFORMANCEECOMMERCEGROUP.COM</div>
+            <div>A PRIVATELY HELD HOLDING COMPANY</div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── App ──────────────────────────────────────────────────
+    function HomePage() {
+      return (
+        <PegShell>
+          <PegNav />
+          <HeroHome />
+          <NumbersHome />
+          <PortfolioHome />
+          <ThesisHome />
+          <CareersHomeTeaser />
+          <FAQHome />
+          <PegFooter />
+        </PegShell>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<HomePage />);
+  </script>
+</body>
+</html>
